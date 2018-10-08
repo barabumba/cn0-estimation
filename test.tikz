@@ -1,0 +1,75 @@
+\begin{tikzpicture}[auto, scale=1,>=latex', node distance=2cm]
+% \draw[help lines] (0,-4) grid (20,4);
+% \draw (input) -- (10,0);
+
+ \node[point] (input) {};
+
+ \draw [color=gray,thick, dashed] (1, 0)[above=2mm, right=2mm] rectangle (4.5, 2.5);
+ \path node[text centered, text width=8em] at (3, 2.7)[below] {Когерентное накопление};
+
+ \draw [color=gray,thick, dashed] (1, 0)[below=2mm, right=2mm] rectangle (4.5, -2.5);
+ \path node[text centered, text width=8em] at (3, -2.7)[above] {Некогерентное накопление};
+
+ \draw [color=gray,thick, dashed] (5, -2.7) rectangle (7.4, 2.7);
+ \path node[text centered, text width=8em] at (6.2, 2.7)[below] {Некогерентное накопление};
+
+ \draw
+  node at (0,-1) (lower_row_start) {}
+  node[block, right of=lower_row_start] (ncoh_ch_c_sum) {$|\cdot|^{2}$}
+  node[block, right of=ncoh_ch_c_sum] (ncoh_ch_c_abs) {$\sum\limits^{M}$}
+  node[block, right of=ncoh_ch_c_abs, node distance=2.2cm] (ncoh_ch_acc) {$\sum\limits^{L}$};
+
+ \draw
+  node at (0,1) (upper_row_start) {$\dot{y_{i}}$}
+  node[dot] at (0.75,1) (branching) {}
+  node[block, right of=upper_row_start] (c_sum) {$\sum\limits^{M}$}
+  node[block, right of=c_sum] (c_abs) {$|\cdot|^{2}$}
+  node[block, right of=c_abs, node distance=2.2cm] (coh_ch_acc) {$\sum\limits^{L}$};
+
+ \draw (7.7, -1.5) rectangle (9.3,1.5);
+ \path node[text centered, text width=5em] at (8.5, 0) {{Пересчёт в $S$ и $N$}};
+
+ \draw [->] (upper_row_start) -- (c_sum);
+ \draw [->] (c_sum) -- (c_abs);
+ \draw [->] (c_abs) -- (coh_ch_acc);
+ \draw [->] (coh_ch_acc) -- (7.7, 1);
+
+ \draw[->] (branching) |- (ncoh_ch_c_sum);
+ \draw[->] (ncoh_ch_c_sum) |- (ncoh_ch_c_abs);
+ \draw[->] (ncoh_ch_c_abs) |- (ncoh_ch_acc);
+ \draw [->] (ncoh_ch_acc) -- (7.7, -1);
+
+ \node[dot] at (9.8, -1) (signal_branch) {};
+ \node[point] at (9.8,1) (noise) {};
+ \node[point] at (9.8,-1) (signal) {};
+
+ \draw (9.3,1) -- node {$N$} (noise);
+ \draw (9.3,-1) -- node {$S$} (signal);
+
+ \node[block, text width=5em, text centered] at (9.8, -2.5) (jump_search) {Детектор скачка};
+ \draw[->] (signal_branch) -- (jump_search);
+
+ \node[block, text width=7em, right of=noise, text centered](noise_smooth) {Сглаживание $N$};
+ \draw[->] (noise) -- (noise_smooth);
+
+ \node[block, text width=7em, right of=signal, text centered](signal_smooth) {Сглаживание $S$};
+ \draw[->] (signal) -- (signal_smooth);
+
+ \node[block, text width = 6em, text centered] at (14.5,0) (cn0) {Вычисление $CN_{0}$};
+ \draw[->] (noise_smooth) -| node {$\widetilde{N}$} (cn0);
+ \draw[->] (signal_smooth) -| node[right] {$\widetilde{S}$} (cn0);
+
+ \node[point, right of=cn0, right=5mm] (out) {};
+ \draw[->] (cn0) --  node {$\widetilde{CN_{0}}$} (out);
+
+ \node[dot, left=5mm] at (out) (settings_branch) {};
+ \node[block, text width=5em] at (13.3, -2.5) (settings) {Настройка};
+ \draw[->] (settings_branch) |- (settings);
+ \draw[->] (jump_search) -- (settings);
+
+ \node[point] at (13.3, -1.75) (connect) {};
+ \draw (settings) -- (connect);
+ \draw[->] (connect) -| (signal_smooth);
+
+
+\end{tikzpicture}
